@@ -13,3 +13,14 @@ jobs:
             - uses: actions/setup-node@v2
               with:
                   node-version: '14'
+            - name: Configure AWS Credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+              aws-region: eu-central-1
+              aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+              aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+
+            - name: deploy
+              run: |
+                  zip -j deploy.zip ./lambda/*
+                  aws lambda update-function-code --function-name=arn:aws:lambda:eu-central-1:467129973541:function:helloFromLambda --zip-file=fileb://deploy.zip
